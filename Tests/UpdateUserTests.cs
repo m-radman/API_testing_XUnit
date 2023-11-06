@@ -17,22 +17,18 @@ namespace GoRest_L9.Tests
         [Fact]
         public async void CreateAndUpdateUser()
         {
-            HttpMethod postMethod = HttpMethod.Post;
-            HttpMethod patchMethod = HttpMethod.Patch;
             string newEmail = faker.Internet.ExampleEmail();
             string patchField = "{\"email\": \"" + newEmail + "\"}";
 
             User newUser = UserGenerator.InstantiateUser();
 
             var response = await Requests.BodyReq(client, postMethod, gorestUsersUrl, token, newUser);
-            string content = await response.Content.ReadAsStringAsync();
-            User? user = JsonConvert.DeserializeObject<User>(content);
+            User? user = await UserGenerator.DeserializeUser(response);
 
             string userUri = gorestUsersUrl + user?.id;
 
             var responsePatch = await Requests.BodyReq(client, patchMethod, userUri, token, patchField);
-            string contentPatch = await responsePatch.Content.ReadAsStringAsync();
-            User? updatedUser = JsonConvert.DeserializeObject<User>(contentPatch);
+            User? updatedUser = await UserGenerator.DeserializeUser(responsePatch);
 
             Assert.Equal(newEmail, updatedUser?.email);
         }
@@ -45,8 +41,7 @@ namespace GoRest_L9.Tests
             User newUser = UserGenerator.InstantiateUser();
 
             var response = await Requests.BodyReq(client, postMethod, gorestUsersUrl, token, newUser);
-            string content = await response.Content.ReadAsStringAsync();
-            User? user = JsonConvert.DeserializeObject<User>(content);
+            User? user = await UserGenerator.DeserializeUser(response);
 
             string userUri = gorestUsersUrl + user?.id;
 
@@ -64,8 +59,7 @@ namespace GoRest_L9.Tests
             User newUser = UserGenerator.InstantiateUser();
 
             var response = await Requests.BodyReq(client, postMethod, gorestUsersUrl, token, newUser);
-            string content = await response.Content.ReadAsStringAsync();
-            User? user = JsonConvert.DeserializeObject<User>(content);
+            User? user = await UserGenerator.DeserializeUser(response);
 
             string userUri = gorestUsersUrl + user?.id;
 
@@ -83,14 +77,12 @@ namespace GoRest_L9.Tests
             User newUser = UserGenerator.InstantiateUser();
 
             var response = await Requests.BodyReq(client, postMethod, gorestUsersUrl, token, newUser);
-            string content = await response.Content.ReadAsStringAsync();
-            User? user = JsonConvert.DeserializeObject<User>(content);
+            User? user = await UserGenerator.DeserializeUser(response);
 
             string userUri = gorestUsersUrl + user?.id;
 
             var responsePatch = await Requests.BodyReq(client, patchMethod, userUri, token, patchField);
-            string contentPatch = await responsePatch.Content.ReadAsStringAsync();
-            User? updatedUser = JsonConvert.DeserializeObject<User>(contentPatch);
+            User? updatedUser = await UserGenerator.DeserializeUser(responsePatch);
 
             Assert.Equivalent(user, updatedUser);
         }

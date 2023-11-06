@@ -1,9 +1,10 @@
 ﻿using Bogus;
 using GoRest_L9.Models;
+using Newtonsoft.Json;
 
 namespace GoRest_L9.Helpers
 {
-    public static class UserGenerator
+    public class UserGenerator
     {
         public static User InstantiateUser()
         {
@@ -17,6 +18,13 @@ namespace GoRest_L9.Helpers
 
             User newUser = new(null, userName, userEmail, gender, status);
             return newUser;
+        }
+
+        public async static Task<User> DeserializeUser(HttpResponseMessage response)
+        {
+            string responseContent = await response.Content.ReadAsStringAsync();
+            User? user = JsonConvert.DeserializeObject<User>(responseContent);
+            return user;
         }
 
         private static string getGender()

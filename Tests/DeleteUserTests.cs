@@ -6,6 +6,8 @@ namespace GoRest_L9.Tests
 {
     public class DeleteUserTests
     {
+        readonly HttpMethod postMethod = HttpMethod.Post;
+        readonly HttpMethod deleteMethod = HttpMethod.Delete;
         readonly HttpClient client = new HttpClient();
         readonly string gorestUsersUrl = "https://gorest.co.in/public/v2/users/";
         readonly string token = "Bearer 0ade2be2ee359b676825ff8d59bfaf071b5e64afc5d4ff13efecc60065ac7e10";
@@ -13,14 +15,11 @@ namespace GoRest_L9.Tests
         [Fact]
         public async void DeleteCreatedUser()
         {
-            HttpMethod postMethod = HttpMethod.Post;
-            HttpMethod deleteMethod = HttpMethod.Delete;
             HttpMethod getMethod = HttpMethod.Get;
             User newUser = UserGenerator.InstantiateUser();
 
             var response = await Requests.BodyReq(client, postMethod, gorestUsersUrl, token, newUser);
-            string content = await response.Content.ReadAsStringAsync();
-            User? user = JsonConvert.DeserializeObject<User>(content);
+            User? user = await UserGenerator.DeserializeUser(response);
 
             string userUri = gorestUsersUrl + user?.id;
 
@@ -35,14 +34,11 @@ namespace GoRest_L9.Tests
         [Fact]
         public async void DeleteUserWithoutAuth()
         {
-            HttpMethod postMethod = HttpMethod.Post;
-            HttpMethod deleteMethod = HttpMethod.Delete;
             User newUser = UserGenerator.InstantiateUser();
             string invalidToken = "Bearer invalidToken";
 
             var response = await Requests.BodyReq(client, postMethod, gorestUsersUrl, token, newUser);
-            string content = await response.Content.ReadAsStringAsync();
-            User? user = JsonConvert.DeserializeObject<User>(content);
+            User? user = await UserGenerator.DeserializeUser(response);
 
             string userUri = gorestUsersUrl + user?.id;
 

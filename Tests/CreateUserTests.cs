@@ -15,18 +15,15 @@ namespace GoRest_L9.Tests
         public async void CreateAndAssertUser()
         {
             HttpMethod getMethod = HttpMethod.Get;
-            HttpMethod postMethod = HttpMethod.Post;
             User newUser = UserGenerator.InstantiateUser();
 
             var response = await Requests.BodyReq(client, postMethod, gorestUsersUrl, token, newUser);
-            string content = await response.Content.ReadAsStringAsync();
-            User? user = JsonConvert.DeserializeObject<User>(content);
+            User? user = await UserGenerator.DeserializeUser(response);
 
             string getUri = gorestUsersUrl + user?.id;
 
             var responseGet = await Requests.NoBodyReq(client, getMethod, getUri, token);
-            string contentGet = await responseGet.Content.ReadAsStringAsync();
-            User? createdUser = JsonConvert.DeserializeObject<User>(contentGet);
+            User? createdUser = await UserGenerator.DeserializeUser(responseGet);
 
             Assert.Multiple(
                 () => Assert.Equal(newUser.name, createdUser?.name),

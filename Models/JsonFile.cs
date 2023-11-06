@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoRest_L9.Models
 {
-    internal class JsonFile
+    public class JsonFile
     {
         public string username {  get; set; }
         public string password { get; set; }
